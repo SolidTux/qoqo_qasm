@@ -117,6 +117,22 @@ pub fn call_operation(
             qubit_register_name,
             op.target()
         )),
+        Operation::CCNOT(op) => {
+            let qubits = op.qubits();
+            Ok(format!(
+                "ccx {reg}[{}],{reg}[{}],{reg}[{}];",
+                qubits[0],
+                qubits[1],
+                qubits[2],
+                reg = qubit_register_name,
+            ))
+        }
+        Operation::PhaseShiftState1(op) => Ok(format!(
+            "p({:.15}) {}[{}];",
+            op.theta().float().unwrap(),
+            qubit_register_name,
+            op.qubit()
+        )),
         Operation::MolmerSorensenXX(op) => Ok(format!(
             "rxx(pi/2) {}[{}],{}[{}];",
             qubit_register_name,

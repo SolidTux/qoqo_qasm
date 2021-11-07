@@ -148,6 +148,22 @@ def qasm_call_operation(
         qubit = 'q[{}]'.format(
             operation.target()) if qubit_names is None else qubit_names[operation.target()]
         op = 'cx {control},{qubit}'.format(control=control, qubit=qubit)
+    elif 'MultiCNOT' in tags:
+        operation = cast(ops.MultiCNOT, operation)
+        qubits = operation.qubits()
+        qubits_str = ','.join(map(lambda x: 'q[{}]'.format(x) if qubit_names is None else qubit_names[x], qubits))
+        if len(qubits) == 2:
+            op = 'cx ' + qubits_str
+        elif len(qubits) == 3:
+            op = 'ccx ' + qubits_str
+        else:
+            raise RuntimeError('MultiCNOT is only supported with 1 or 2 controls')
+    elif 'PhaseShiftState1' in tags:
+        operation = cast(ops.PhaseShiftState1, operation)
+        theta = operation.theta()
+        qubit = 'q[{}]'.format(
+            operation.qubit()) if qubit_names is None else qubit_names[operation.qubit()]
+        op = 'p({theta}) {qubit}'.format(theta=theta, qubit=qubit)
     elif 'Hadamard' in tags:
         operation = cast(ops.Hadamard, operation)
         qubit = 'q[{}]'.format(

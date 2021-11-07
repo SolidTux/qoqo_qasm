@@ -117,15 +117,27 @@ pub fn call_operation(
             qubit_register_name,
             op.target()
         )),
-        Operation::CCNOT(op) => {
+        Operation::MultiCNOT(op) => {
             let qubits = op.qubits();
-            Ok(format!(
-                "ccx {reg}[{}],{reg}[{}],{reg}[{}];",
-                qubits[0],
-                qubits[1],
-                qubits[2],
-                reg = qubit_register_name,
-            ))
+            match qubits.len() {
+                2 => Ok(format!(
+                    "cx {reg}[{}],{reg}[{}];",
+                    qubits[0],
+                    qubits[1],
+                    reg = qubit_register_name,
+                )),
+                3 => Ok(format!(
+                    "ccx {reg}[{}],{reg}[{}],{reg}[{}];",
+                    qubits[0],
+                    qubits[1],
+                    qubits[2],
+                    reg = qubit_register_name,
+                )),
+                _ => Err(RoqoqoBackendError::OperationNotInBackend {
+                    backend: "QASM",
+                    hqslang: operation.hqslang(),
+                }),
+            }
         }
         Operation::PhaseShiftState1(op) => Ok(format!(
             "p({:.15}) {}[{}];",

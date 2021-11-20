@@ -227,6 +227,13 @@ def qasm_call_operation(
         qubit = 'q[{}]'.format(
             operation.target()) if qubit_names is None else qubit_names[operation.target()]
         op = 'cz {control},{qubit}'.format(control=control, qubit=qubit)
+    elif 'SWAP' in tags:
+        operation = cast(ops.SWAP, operation)
+        control = 'q[{}]'.format(
+            operation.control()) if qubit_names is None else qubit_names[operation.control()]
+        qubit = 'q[{}]'.format(
+            operation.target()) if qubit_names is None else qubit_names[operation.target()]
+        op = 'swap {control},{qubit}'.format(control=control, qubit=qubit)
     elif 'SingleQubitGate' in tags:
         operation = cast(ops.SingleQubitGate, operation)
         op = _execute_SingleQubitGate(operation, qubit_names)

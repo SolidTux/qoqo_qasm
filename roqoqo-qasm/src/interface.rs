@@ -173,6 +173,13 @@ pub fn call_operation(
             qubit_register_name,
             op.target()
         )),
+        Operation::SWAP(op) => Ok(format!(
+            "swap {}[{}],{}[{}];",
+            qubit_register_name,
+            op.control(),
+            qubit_register_name,
+            op.target()
+        )),
         Operation::SingleQubitGate(op) => {
             let alpha = CalculatorComplex::new(op.alpha_r(), op.alpha_i());
             let beta = CalculatorComplex::new(op.beta_r(), op.beta_i());

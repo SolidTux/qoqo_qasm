@@ -164,6 +164,13 @@ def qasm_call_operation(
         qubit = 'q[{}]'.format(
             operation.qubit()) if qubit_names is None else qubit_names[operation.qubit()]
         op = 'p({theta}) {qubit}'.format(theta=theta, qubit=qubit)
+    elif 'ControlledPhaseShift' in tags:
+        operation = cast(ops.ControlledPhaseShift, operation)
+        control = 'q[{}]'.format(
+            operation.control()) if qubit_names is None else qubit_names[operation.control()]
+        qubit = 'q[{}]'.format(
+            operation.target()) if qubit_names is None else qubit_names[operation.target()]
+        op = 'cp {control},{qubit}'.format(control=control, qubit=qubit)
     elif 'Hadamard' in tags:
         operation = cast(ops.Hadamard, operation)
         qubit = 'q[{}]'.format(

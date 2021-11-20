@@ -145,6 +145,13 @@ pub fn call_operation(
             qubit_register_name,
             op.qubit()
         )),
+        Operation::ControlledPhaseShift(op) => Ok(format!(
+            "cp({:.15}) {reg}[{}], {reg}[{}];",
+            op.theta().float().unwrap(),
+            op.control(),
+            op.target(),
+            reg = qubit_register_name,
+        )),
         Operation::MolmerSorensenXX(op) => Ok(format!(
             "rxx(pi/2) {}[{}],{}[{}];",
             qubit_register_name,
